@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/open_camera"
+        android:icon="@drawable/ic_baseline_photo_camera_24"
+        android:title="Take photo" />
+    <item
+        android:id="@+id/upload_gallery"
+        android:icon="@drawable/ic_baseline_add_photo_alternate_24"
+        android:title="Upload from gallery"
+        />
+    <item
+        android:id="@+id/upload_cloud"
+        android:icon="@drawable/ic_baseline_cloud_upload_24"
+        android:title="Upload from cloud"
+        />
+
+</menu>
