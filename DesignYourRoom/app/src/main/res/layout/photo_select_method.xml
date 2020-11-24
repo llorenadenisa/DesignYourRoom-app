@@ -4,13 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_height="200dp"
-        android:layout_width="200dp"
-        android:layout_centerInParent="true"
-        app:srcCompat="@mipmap/ic_launcher"
-        android:contentDescription="Sample Image"/>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_navigation"
@@ -21,5 +14,10 @@
         app:itemBackground="@color/cardview_light_background"
         app:menu="@menu/bottom_upload_photo" />
 
+    <ImageView
+        android:id="@+id/img_set"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:contentDescription="@string/description" />
 
 </RelativeLayout>
