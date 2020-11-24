@@ -27,8 +27,6 @@ import org.opencv.imgproc.Imgproc
 class PhotoMethodSelector: AppCompatActivity(), BottomNavigationView.OnNavigationItemSelectedListener {
 
     lateinit var bitmap: Bitmap
-    lateinit var tl: Point
-    var touchCount = 0
     var chosenColor = Color.GREEN
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -36,9 +34,6 @@ class PhotoMethodSelector: AppCompatActivity(), BottomNavigationView.OnNavigatio
         setContentView(R.layout.photo_select_method)
         OpenCVLoader.initDebug();
         val bottomNavigationMenu: BottomNavigationView = findViewById(R.id.bottom_navigation)
-        tl = Point()
-
-
         bottomNavigationMenu.setOnNavigationItemSelectedListener(this)
     }
 
@@ -75,12 +70,10 @@ class PhotoMethodSelector: AppCompatActivity(), BottomNavigationView.OnNavigatio
         val picEditor = EditPic(bitmap)
         img_set.setOnTouchListener { v, event ->
             if (event.action == MotionEvent.ACTION_DOWN) {
-                if (touchCount == 0) {
-                    tl.x = event.x.toDouble()
-                    tl.y = event.y.toDouble()
 
-                   rpPaintHSV(bitmap, tl)
-                }
+                   var editedPic = rpPaintHSV(bitmap)
+                    showImage(editedPic, img_set)
+
             }
             true
             }
@@ -107,7 +100,7 @@ class PhotoMethodSelector: AppCompatActivity(), BottomNavigationView.OnNavigatio
 //        }
 //    }
 
-    fun rpPaintHSV(bitmap: Bitmap, p: Point): Mat {
+    fun rpPaintHSV(bitmap: Bitmap): Mat {
         val cannyMinT = 30.0
         val ratio = 2.5
 
@@ -142,10 +135,9 @@ class PhotoMethodSelector: AppCompatActivity(), BottomNavigationView.OnNavigatio
         Imgproc.dilate(cannyMat, cannyMat,mask, Point(0.0,0.0), 5)
 
         val displayMetrics = DisplayMetrics()
-       windowManager.defaultDisplay.getMetrics(displayMetrics)
-        val height = displayMetrics.heightPixels
-        val width = displayMetrics.widthPixels
-        val seedPoint = Point(p.x*(mRgbMat.width()/width.toDouble()), p.y*(mRgbMat.height()/height.toDouble()))
+        val height = 1800
+        val width = 1000
+        val seedPoint = Point(mRgbMat.width()/width.toDouble(), mRgbMat.height()/height.toDouble())
         Imgproc.resize(cannyMat, cannyMat, Size(cannyMat.width() + 2.0, cannyMat.height() + 2.0))
         Imgproc.medianBlur(mRgbMat,mRgbMat,15)
         val floodFillFlag = 8
@@ -176,7 +168,6 @@ class PhotoMethodSelector: AppCompatActivity(), BottomNavigationView.OnNavigatio
         // converted to rgb
         Imgproc.cvtColor(result, result, Imgproc.COLOR_HSV2RGB)
         Core.addWeighted(result,0.7, img,0.3 ,0.0,result )
-        showImage(result,img_set)
         return result
     }
 
