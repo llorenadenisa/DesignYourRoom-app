@@ -9,14 +9,14 @@ import org.opencv.imgproc.Imgproc
 
 class EditPic(bitmap: Bitmap) {
 
-    val chosenColor = Color.RED
-    var bitmap = bitmap
+    val chosenColor = Color.YELLOW
 
     fun applyPaint(bitmap: Bitmap): Mat {
-        val cannyMinT = 30.0
+        val cannyMinTreshold = 30.0
         val ratio = 2.5
 
         val mRgbMat = Mat()
+        //conversie din bmp in mat
         Utils.bitmapToMat(bitmap, mRgbMat)
         Imgproc.cvtColor(mRgbMat,mRgbMat, Imgproc.COLOR_RGBA2RGB)
         val mask = Mat(Size(mRgbMat.width()/8.0, mRgbMat.height()/8.0), CvType.CV_8UC1, Scalar(0.0))
@@ -28,7 +28,7 @@ class EditPic(bitmap: Bitmap) {
         Imgproc.cvtColor(mRgbMat, mGreyScaleMat, Imgproc.COLOR_RGB2GRAY, 3)
         Imgproc.medianBlur(mGreyScaleMat,mGreyScaleMat,3)
         val cannyGreyMat = Mat()
-        Imgproc.Canny(mGreyScaleMat, cannyGreyMat, cannyMinT, cannyMinT*ratio, 3)
+        Imgproc.Canny(mGreyScaleMat, cannyGreyMat, cannyMinTreshold, cannyMinTreshold*ratio, 3)
         //hsv
         val hsvImage = Mat()
         Imgproc.cvtColor(img,hsvImage, Imgproc.COLOR_RGB2HSV)
@@ -39,14 +39,13 @@ class EditPic(bitmap: Bitmap) {
         Core.merge(listOf(list.get(1)), sChannelMat)
         Imgproc.medianBlur(sChannelMat,sChannelMat,3)
 
-        // canny
+        // canny edge detect
         val cannyMat = Mat()
-        Imgproc.Canny(sChannelMat, cannyMat, cannyMinT, cannyMinT*ratio, 3)
+        Imgproc.Canny(sChannelMat, cannyMat, cannyMinTreshold, cannyMinTreshold*ratio, 3)
 
-        Core.addWeighted(cannyMat,0.5, cannyGreyMat,0.5 ,0.0,cannyMat)
+        Core.addWeighted(cannyMat,0.3, cannyGreyMat,0.3 ,0.0,cannyMat)
         Imgproc.dilate(cannyMat, cannyMat,mask, Point(0.0,0.0), 5)
 
-        val displayMetrics = DisplayMetrics()
         val height = 1800
         val width = 1000
         val seedPoint = Point(mRgbMat.width()/width.toDouble(), mRgbMat.height()/height.toDouble())
@@ -67,17 +66,16 @@ class EditPic(bitmap: Bitmap) {
             Scalar(5.0, 5.0, 5.0),
             floodFillFlag
         )
-        // showImage(mRgbMat,floodFillImage)
         Imgproc.dilate(mRgbMat, mRgbMat, mask, Point(0.0,0.0), 5)
-        //got the hsv of the mask image
+
         val rgbHsvImage = Mat()
         Imgproc.cvtColor(mRgbMat,rgbHsvImage, Imgproc.COLOR_RGB2HSV)
         val list1 = ArrayList<Mat>(3)
         Core.split(rgbHsvImage, list1)
-        //merged the “v” of original image with mRgb mat
+
         val result = Mat()
         Core.merge(listOf(list1.get(0),list1.get(1),list.get(2)), result)
-        // converted to rgb
+
         Imgproc.cvtColor(result, result, Imgproc.COLOR_HSV2RGB)
         Core.addWeighted(result,0.7, img,0.3 ,0.0,result )
         return result
