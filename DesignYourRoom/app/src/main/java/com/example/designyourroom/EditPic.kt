@@ -8,9 +8,11 @@ import org.opencv.core.*
 import org.opencv.imgproc.Imgproc
 
 class EditPic(bitmap: Bitmap) {
+
     val chosenColor = Color.RED
     var bitmap = bitmap
-     fun rpPaintHSV(bitmap: Bitmap, p: Point): Mat {
+
+    fun applyPaint(bitmap: Bitmap): Mat {
         val cannyMinT = 30.0
         val ratio = 2.5
 
@@ -45,10 +47,9 @@ class EditPic(bitmap: Bitmap) {
         Imgproc.dilate(cannyMat, cannyMat,mask, Point(0.0,0.0), 5)
 
         val displayMetrics = DisplayMetrics()
-        //windowManager.defaultDisplay.getMetrics(displayMetrics)
-        val height = displayMetrics.heightPixels
-        val width = displayMetrics.widthPixels
-        val seedPoint = Point(p.x*(mRgbMat.width()/width.toDouble()), p.y*(mRgbMat.height()/height.toDouble()))
+        val height = 1800
+        val width = 1000
+        val seedPoint = Point(mRgbMat.width()/width.toDouble(), mRgbMat.height()/height.toDouble())
         Imgproc.resize(cannyMat, cannyMat, Size(cannyMat.width() + 2.0, cannyMat.height() + 2.0))
         Imgproc.medianBlur(mRgbMat,mRgbMat,15)
         val floodFillFlag = 8
@@ -79,7 +80,6 @@ class EditPic(bitmap: Bitmap) {
         // converted to rgb
         Imgproc.cvtColor(result, result, Imgproc.COLOR_HSV2RGB)
         Core.addWeighted(result,0.7, img,0.3 ,0.0,result )
-        //showImage(result,img_set)
         return result
     }
 
