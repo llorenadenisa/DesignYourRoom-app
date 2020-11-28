@@ -61,7 +61,7 @@ class PhotoMethodSelector: AppCompatActivity(), BottomNavigationView.OnNavigatio
 //            this.type="image/*"
 //            startActivityForResult(this, REQUEST_CODE)
 //        }
-        img_set.setImageResource(R.drawable.room_img)
+        img_set.setImageResource(R.drawable.test6)
         bitmap = (img_set.drawable as BitmapDrawable).bitmap
         val picEditor = EditPic(bitmap)
         img_set.setOnTouchListener { v, event ->
