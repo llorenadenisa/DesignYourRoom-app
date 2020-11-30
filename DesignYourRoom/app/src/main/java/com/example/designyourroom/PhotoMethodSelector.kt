@@ -1,29 +1,44 @@
 package com.example.designyourroom
 
+import android.Manifest
 import android.annotation.SuppressLint
+import android.app.Activity
+import android.content.ContentResolver
+import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Environment
+import android.provider.MediaStore
 import android.util.Log
 import android.view.MenuItem
 import android.view.MotionEvent
+import android.view.View
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.android.synthetic.main.edit_photo_layout.*
 import org.opencv.android.OpenCVLoader
 import org.opencv.android.Utils
 import org.opencv.core.*
-
+import java.io.File
+import java.io.OutputStream
 
 
 class PhotoMethodSelector: AppCompatActivity(), BottomNavigationView.OnNavigationItemSelectedListener {
 
+    private  val TAKE_PICTURE = 1
+    private val UPLOAD_PICTURE = 2;
+
     lateinit var bitmap: Bitmap
-    var chosenColor = Color.GREEN
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,6 +54,7 @@ class PhotoMethodSelector: AppCompatActivity(), BottomNavigationView.OnNavigatio
         when(item.itemId){
             R.id.open_camera -> {
                 Log.d("Camera", "Deschide camera")
+                takePhoto()
                 return true
             }
             R.id.upload_gallery -> {
@@ -57,22 +73,11 @@ class PhotoMethodSelector: AppCompatActivity(), BottomNavigationView.OnNavigatio
     @RequiresApi(Build.VERSION_CODES.P)
     @SuppressLint("UseCompatLoadingForDrawables", "ClickableViewAccessibility")
     private fun openGalleryForImage() {
-//        val intent = Intent(Intent.ACTION_PICK).apply{
-//            this.type="image/*"
-//            startActivityForResult(this, REQUEST_CODE)
-//        }
-        img_set.setImageResource(R.drawable.test6)
-        bitmap = (img_set.drawable as BitmapDrawable).bitmap
-        val picEditor = EditPic(bitmap)
-        img_set.setOnTouchListener { v, event ->
-            if (event.action == MotionEvent.ACTION_DOWN) {
+        val intent = Intent(Intent.ACTION_PICK).apply{
+            this.type="image/*"
+            startActivityForResult(intent, REQUEST_CODE)
+        }
 
-                   var editedPic = picEditor.applyPaint(bitmap)
-                    showImage(editedPic, img_set)
-
-            }
-            true
-            }
 
     }
     private fun showImage(image: Mat, view: ImageView) {
@@ -95,8 +100,43 @@ class PhotoMethodSelector: AppCompatActivity(), BottomNavigationView.OnNavigatio
 //            }
 //        }
 //    }
+    fun takePhoto() {
+        val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        startActivityForResult(intent, TAKE_PICTURE)
+    }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        when (requestCode) {
+            TAKE_PICTURE -> if (resultCode == Activity.RESULT_OK && data != null) {
+                // img_set.setImageBitmap(data.extras?.get("data") as Bitmap)
+                Log.d("photo", "am returnat o poza")
+            }
+            UPLOAD_PICTURE -> if (resultCode == Activity.RESULT_OK && data != null) {
+                Log.d("upload", "am incarcat o poza din galerie")
+            }
+        }
+        if (data != null) {
+            loadPicture(data)
+        }
+    }
 
+    @SuppressLint("ClickableViewAccessibility")
+    fun loadPicture(data:Intent)
+    {
+        img_set.setImageBitmap(data.extras?.get("data") as Bitmap)
+
+//        val picEditor = EditPic(bitmap)
+//        img_set.setOnTouchListener { v, event ->
+//            if (event.action == MotionEvent.ACTION_DOWN) {
+//
+//                var editedPic = picEditor.applyPaint(bitmap)
+//                showImage(editedPic, img_set)
+//
+//            }
+//            true
+//        }
+    }
 
     companion object {
         const val REQUEST_CODE = 100
