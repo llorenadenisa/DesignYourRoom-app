@@ -4,6 +4,8 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.ActivityNotFoundException
+import android.content.Context
+import android.content.ContextWrapper
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -22,16 +24,21 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.android.synthetic.main.photo_select_method.*
 import org.opencv.android.OpenCVLoader
 import org.opencv.android.Utils
-import org.opencv.core.*
+import org.opencv.core.Mat
+import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
 
 
 class PhotoMethodSelector: AppCompatActivity(), BottomNavigationView.OnNavigationItemSelectedListener {
 
     private  val TAKE_PICTURE = 1
     private val UPLOAD_PICTURE = 2;
-    val permissions = arrayOf(android.Manifest.permission.CAMERA,
+    val permissions = arrayOf(
+        android.Manifest.permission.CAMERA,
         android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
-        android.Manifest.permission.READ_EXTERNAL_STORAGE)
+        android.Manifest.permission.READ_EXTERNAL_STORAGE
+    )
 
     lateinit var bitmap: Bitmap
 
@@ -62,17 +69,15 @@ class PhotoMethodSelector: AppCompatActivity(), BottomNavigationView.OnNavigatio
                 return true
             }
             R.id.start_edit -> {
-                if(img_set.drawable == null) {
+                if (img_set.drawable == null) {
                     Log.e("noImg", "Nu exista imagine")
                     return false
+                } else {
+                    val absPath = saveToInternalStorage(img_set.drawable.toBitmap())
+                    val intent = Intent(this, EditPicture::class.java).apply {
+                        action = Intent.ACTION_SEND
                     }
-                else{
-                        val imageUtil = ImageUtil()
-                        val bmpToBase64 = imageUtil.convertFromBmp(img_set.drawable.toBitmap())
-                        val intent = Intent(this, EditPicture::class.java).apply {
-                            action = Intent.ACTION_SEND
-                        }
-                    intent.putExtra("image", bmpToBase64)
+                    intent.putExtra("image", absPath)
                     startActivity(intent)
 
                     return true
@@ -99,7 +104,7 @@ class PhotoMethodSelector: AppCompatActivity(), BottomNavigationView.OnNavigatio
         val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         try {
             startActivityForResult(intent, TAKE_PICTURE)
-        }catch(e: ActivityNotFoundException){
+        }catch (e: ActivityNotFoundException){
             Log.e("camera", "nu am putut sa deschid camera")
         }
     }
@@ -122,14 +127,20 @@ class PhotoMethodSelector: AppCompatActivity(), BottomNavigationView.OnNavigatio
     }
 
     private fun hasNoPermissions(): Boolean{
-        return ContextCompat.checkSelfPermission(this,
-            Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(this,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(this,
-            Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED
+        return ContextCompat.checkSelfPermission(
+            this,
+            Manifest.permission.READ_EXTERNAL_STORAGE
+        ) != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(
+            this,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+        ) != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(
+            this,
+            Manifest.permission.CAMERA
+        ) != PackageManager.PERMISSION_GRANTED
     }
 
     fun requestPermission(){
-        ActivityCompat.requestPermissions(this, permissions,0)
+        ActivityCompat.requestPermissions(this, permissions, 0)
     }
 
     companion object {
@@ -142,6 +153,31 @@ class PhotoMethodSelector: AppCompatActivity(), BottomNavigationView.OnNavigatio
         Utils.matToBitmap(image, mBitmap)
         view.setImageBitmap(mBitmap)
         bitmap = mBitmap
+    }
+
+    private fun saveToInternalStorage(bitmapImage: Bitmap): String? {
+        val cw = ContextWrapper(applicationContext)
+        // path to /data/data/yourapp/app_data/imageDir
+        val directory: File = cw.getDir("imageDir", Context.MODE_PRIVATE)
+        // Create imageDir
+        val mypath = File(directory, "profile.jpg")
+        var fos: FileOutputStream? = null
+        try {
+            fos = FileOutputStream(mypath)
+            // Use the compress method on the BitMap object to write image to the OutputStream
+            bitmapImage.compress(Bitmap.CompressFormat.PNG, 100, fos)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        } finally {
+            try {
+                if (fos != null) {
+                    fos.close()
+                }
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
+        }
+        return directory.absolutePath
     }
 
 

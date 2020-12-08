@@ -1,27 +1,25 @@
 package com.example.designyourroom
 
-import android.content.Intent
-import android.graphics.Bitmap
+import android.R
+import android.graphics.BitmapFactory
 import android.os.Bundle
-import android.util.Log
-import android.widget.ImageView
+import kotlinx.android.synthetic.main.edit_photo.*
 import androidx.appcompat.app.AppCompatActivity
-import kotlinx.android.synthetic.main.edit_photo_layout.*
-import org.opencv.android.Utils
-import org.opencv.core.Mat
-import java.lang.reflect.Field
+import java.io.File
+import java.io.FileInputStream
+import java.io.FileNotFoundException
 
 
 class EditPicture: AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.edit_photo_layout)
+        setContentView(com.example.designyourroom.R.layout.edit_photo)
         val intent = getIntent()
         val imageStr = intent.getStringExtra("image")
-        val imgUtil = ImageUtil()
-        val image = imageStr?.let { imgUtil.convertFromBase64(it) }
-        edit_img_view.setImageBitmap(image)
+        if (imageStr != null) {
+            loadImageFromStorage(imageStr)
+        }
 
 //        val fields: Array<Field> = Class.forName("$packageName.R\$color").declaredFields
 //
@@ -41,6 +39,16 @@ class EditPicture: AppCompatActivity() {
 //        view.setImageBitmap(mBitmap)
 //        bitmap = mBitmap
 //    }
+
+    private fun loadImageFromStorage(path: String) {
+        try {
+            val f = File(path, "profile.jpg")
+            val bmp = BitmapFactory.decodeStream(FileInputStream(f))
+            edit_img_view.setImageBitmap(bmp)
+        } catch (e: FileNotFoundException) {
+            e.printStackTrace()
+        }
+    }
 
 
 }
