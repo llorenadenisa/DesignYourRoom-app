@@ -11,9 +11,9 @@
         android:title="Upload from gallery"
         />
     <item
-        android:id="@+id/upload_cloud"
-        android:icon="@drawable/ic_baseline_cloud_upload_24"
-        android:title="Upload from cloud"
+        android:id="@+id/start_edit"
+        android:icon="@drawable/ok"
+        android:title="Start edit"
         />
 
 </menu>

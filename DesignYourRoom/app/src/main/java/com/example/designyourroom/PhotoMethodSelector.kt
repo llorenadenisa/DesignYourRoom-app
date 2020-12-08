@@ -3,42 +3,37 @@ package com.example.designyourroom
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.content.ContentResolver
+import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
-import android.graphics.Color
-import android.graphics.drawable.BitmapDrawable
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
 import android.view.MenuItem
-import android.view.MotionEvent
-import android.view.View
 import android.widget.ImageView
-import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.toBitmap
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import kotlinx.android.synthetic.main.edit_photo_layout.*
+import kotlinx.android.synthetic.main.photo_select_method.*
 import org.opencv.android.OpenCVLoader
 import org.opencv.android.Utils
 import org.opencv.core.*
-import java.io.File
-import java.io.OutputStream
 
 
 class PhotoMethodSelector: AppCompatActivity(), BottomNavigationView.OnNavigationItemSelectedListener {
 
     private  val TAKE_PICTURE = 1
     private val UPLOAD_PICTURE = 2;
+    val permissions = arrayOf(android.Manifest.permission.CAMERA,
+        android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
+        android.Manifest.permission.READ_EXTERNAL_STORAGE)
 
     lateinit var bitmap: Bitmap
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,18 +48,35 @@ class PhotoMethodSelector: AppCompatActivity(), BottomNavigationView.OnNavigatio
 
         when(item.itemId){
             R.id.open_camera -> {
-                Log.d("Camera", "Deschide camera")
+                Log.d("Camera", "    return trueDeschide camera")
                 takePhoto()
-                return true
             }
             R.id.upload_gallery -> {
                 Log.d("Gallery", "Deschide galeria")
-                openGalleryForImage()
+                //openGalleryForImage()
+                img_set.setImageResource(R.drawable.test4)
+                val imageBitmap = img_set.drawable.toBitmap()
+                val detectWall = WallDetection()
+                val result = detectWall.applyPaint(imageBitmap)
+                showImage(result, img_set)
                 return true
             }
-            R.id.upload_cloud -> {
-                Log.d("Cloud", "Upload din cloud")
-                return true
+            R.id.start_edit -> {
+                if(img_set.drawable == null) {
+                    Log.e("noImg", "Nu exista imagine")
+                    return false
+                    }
+                else{
+                        val imageUtil = ImageUtil()
+                        val bmpToBase64 = imageUtil.convertFromBmp(img_set.drawable.toBitmap())
+                        val intent = Intent(this, EditPicture::class.java).apply {
+                            action = Intent.ACTION_SEND
+                        }
+                    intent.putExtra("image", bmpToBase64)
+                    startActivity(intent)
+
+                    return true
+                }
             }
         }
         return false
@@ -75,11 +87,56 @@ class PhotoMethodSelector: AppCompatActivity(), BottomNavigationView.OnNavigatio
     private fun openGalleryForImage() {
         val intent = Intent(Intent.ACTION_PICK).apply{
             this.type="image/*"
-            startActivityForResult(intent, REQUEST_CODE)
         }
+        startActivityForResult(intent, REQUEST_CODE)
 
 
     }
+    fun takePhoto() {
+        if(hasNoPermissions()){
+            requestPermission()
+        }
+        val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        try {
+            startActivityForResult(intent, TAKE_PICTURE)
+        }catch(e: ActivityNotFoundException){
+            Log.e("camera", "nu am putut sa deschid camera")
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        when (requestCode) {
+            TAKE_PICTURE -> if (resultCode == Activity.RESULT_OK && data != null) {
+                val imageBitmap = data.extras?.get("data") as Bitmap
+                img_set.setImageBitmap(imageBitmap)
+                val detectWall = WallDetection()
+                val result = detectWall.applyPaint(imageBitmap)
+                showImage(result, img_set)
+                Log.d("photo", "am returnat o poza")
+            }
+            UPLOAD_PICTURE -> if (resultCode == Activity.RESULT_OK && data != null) {
+                Log.d("upload", "am incarcat o poza din galerie")
+            }
+        }
+    }
+
+    private fun hasNoPermissions(): Boolean{
+        return ContextCompat.checkSelfPermission(this,
+            Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(this,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(this,
+            Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED
+    }
+
+    fun requestPermission(){
+        ActivityCompat.requestPermissions(this, permissions,0)
+    }
+
+    companion object {
+        const val REQUEST_CODE = 100
+    }
+
+
     private fun showImage(image: Mat, view: ImageView) {
         val mBitmap = Bitmap.createBitmap(image.cols(), image.rows(), Bitmap.Config.ARGB_8888);
         Utils.matToBitmap(image, mBitmap)
@@ -87,59 +144,5 @@ class PhotoMethodSelector: AppCompatActivity(), BottomNavigationView.OnNavigatio
         bitmap = mBitmap
     }
 
-    @RequiresApi(Build.VERSION_CODES.P)
-//    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-//        super.onActivityResult(requestCode, resultCode, data)
-//        if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_CODE) {
-//            if (data != null && data.data != null) {
-//                val image = data.data
-//                val source = ImageDecoder.createSource(this.contentResolver, image!!)
-//                val bitmapImag = ImageDecoder.decodeBitmap(source)
-//                val editPic = EditPic()
-//                editPic.processImage(bitmapImag)
-//            }
-//        }
-//    }
-    fun takePhoto() {
-        val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        startActivityForResult(intent, TAKE_PICTURE)
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        when (requestCode) {
-            TAKE_PICTURE -> if (resultCode == Activity.RESULT_OK && data != null) {
-                // img_set.setImageBitmap(data.extras?.get("data") as Bitmap)
-                Log.d("photo", "am returnat o poza")
-            }
-            UPLOAD_PICTURE -> if (resultCode == Activity.RESULT_OK && data != null) {
-                Log.d("upload", "am incarcat o poza din galerie")
-            }
-        }
-        if (data != null) {
-            loadPicture(data)
-        }
-    }
-
-    @SuppressLint("ClickableViewAccessibility")
-    fun loadPicture(data:Intent)
-    {
-        img_set.setImageBitmap(data.extras?.get("data") as Bitmap)
-
-//        val picEditor = EditPic(bitmap)
-//        img_set.setOnTouchListener { v, event ->
-//            if (event.action == MotionEvent.ACTION_DOWN) {
-//
-//                var editedPic = picEditor.applyPaint(bitmap)
-//                showImage(editedPic, img_set)
-//
-//            }
-//            true
-//        }
-    }
-
-    companion object {
-        const val REQUEST_CODE = 100
-    }
 
 }

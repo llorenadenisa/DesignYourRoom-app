@@ -5,9 +5,30 @@
 
 
     <ImageView
-        android:id="@+id/img_set"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
+        android:id="@+id/edit_img_view"
+        android:layout_width="match_parent"
+        android:layout_height="670dp"
+        android:layout_above="@+id/colors"
+        android:layout_marginTop="160dp"
+        android:layout_marginBottom="1dp"
         android:contentDescription="@string/description" />
+
+    <Button
+        android:id="@+id/wallpaper"
+        android:layout_width="210dp"
+        android:layout_height="60dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="8dp"
+        android:layout_marginBottom="0dp"
+        android:layout_toEndOf="@+id/colors"
+        android:text="Wallpapers" />
+
+    <Button
+        android:id="@+id/colors"
+        android:layout_width="210dp"
+        android:layout_height="60dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="0dp"
+        android:text="Colors" />
 
 </RelativeLayout>
