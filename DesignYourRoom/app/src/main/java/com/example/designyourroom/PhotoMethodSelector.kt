@@ -61,11 +61,8 @@ class PhotoMethodSelector: AppCompatActivity(), BottomNavigationView.OnNavigatio
             R.id.upload_gallery -> {
                 Log.d("Gallery", "Deschide galeria")
                 //openGalleryForImage()
-                img_set.setImageResource(R.drawable.test4)
+                img_set.setImageResource(R.drawable.room_img)
                 val imageBitmap = img_set.drawable.toBitmap()
-                val detectWall = WallDetection()
-                val result = detectWall.applyPaint(imageBitmap)
-                showImage(result, img_set)
                 return true
             }
             R.id.start_edit -> {
@@ -115,9 +112,6 @@ class PhotoMethodSelector: AppCompatActivity(), BottomNavigationView.OnNavigatio
             TAKE_PICTURE -> if (resultCode == Activity.RESULT_OK && data != null) {
                 val imageBitmap = data.extras?.get("data") as Bitmap
                 img_set.setImageBitmap(imageBitmap)
-                val detectWall = WallDetection()
-                val result = detectWall.applyPaint(imageBitmap)
-                showImage(result, img_set)
                 Log.d("photo", "am returnat o poza")
             }
             UPLOAD_PICTURE -> if (resultCode == Activity.RESULT_OK && data != null) {

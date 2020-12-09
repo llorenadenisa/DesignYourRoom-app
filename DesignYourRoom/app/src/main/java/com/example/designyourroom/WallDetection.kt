@@ -6,9 +6,9 @@ import org.opencv.android.Utils
 import org.opencv.core.*
 import org.opencv.imgproc.Imgproc
 
-class WallDetection() {
+class WallDetection( color : Int) {
 
-    val chosenColor = Color.RED
+    val chosenColor = color
 
     fun applyPaint(bitmap: Bitmap): Mat {
         val cannyMinTreshold = 20.0
