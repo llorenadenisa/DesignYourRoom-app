@@ -34,6 +34,7 @@
         android:alpha="15"
         android:background="#07000000"
         android:fontFamily="cursive"
+        android:id="@+id/tap_anywhere"
         android:text="Tap anywhere to start"
         android:textAlignment="center"
         android:textColor="@color/Brown"

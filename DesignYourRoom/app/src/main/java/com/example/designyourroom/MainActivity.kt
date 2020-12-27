@@ -13,7 +13,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        homeTitle.startAnimation(AnimationUtils.loadAnimation(this, R.anim.pulse ))
+        tap_anywhere.startAnimation(AnimationUtils.loadAnimation(this, R.anim.pulse ))
 
         main_layout.setOnClickListener{ startApp() }
     }
