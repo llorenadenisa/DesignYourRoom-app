@@ -2,42 +2,49 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_layout"
+    android:background="@drawable/blured"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <Button
-        android:id="@+id/btnStart"
-        android:layout_width="168dp"
-        android:layout_height="98dp"
-        android:layout_marginBottom="196dp"
-        android:background="@drawable/roundbutton"
-        android:backgroundTintMode="src_atop"
-        android:text="Get Started"
+    <TextView
+        android:id="@+id/homeTitle"
+        android:layout_width="412dp"
+        android:layout_height="67dp"
+        android:background="#80ffffff"
+        android:fontFamily="sans-serif-condensed-medium"
+        android:lineSpacingExtra="36sp"
+        android:text="Design your room"
         android:textAlignment="center"
-        android:textColor="@android:color/background_dark"
-        android:textSize="18sp"
+        android:textColor="@color/DarkSlateGray"
+        android:textSize="40sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.4"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.423" />
+
+    <TextView
+        android:layout_width="244dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:alpha="15"
+        android:background="#07000000"
+        android:fontFamily="cursive"
+        android:text="Tap anywhere to start"
+        android:textAlignment="center"
+        android:textColor="@color/Brown"
+        android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <TextView
-        android:id="@+id/homeTitle"
-        android:layout_width="265dp"
-        android:layout_height="65dp"
-        android:fontFamily="sans-serif-light"
-        android:text="Design your room"
-        android:textAlignment="center"
-        android:textColor="@color/colorPrimaryDark"
-        android:textSize="30sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/btnStart"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.76" />
+        app:layout_constraintTop_toBottomOf="@+id/homeTitle"
+        app:layout_constraintVertical_bias="0.0" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

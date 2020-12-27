@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "154822089396",
+    "firebase_url": "https://designyourroom-9e1ef-default-rtdb.firebaseio.com",
+    "project_id": "designyourroom-9e1ef",
+    "storage_bucket": "designyourroom-9e1ef.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:154822089396:android:ef4fd4c906afb2bb5e15e1",
+        "android_client_info": {
+          "package_name": "com.example.designyourroom"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "154822089396-cubfdao95qkvr9f9kv700u4sq3gend53.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.designyourroom",
+            "certificate_hash": "7c255548bdd3073b636f7245b0a5a6633b9cb9a9"
+          }
+        },
+        {
+          "client_id": "154822089396-mpcn1ooo35vp7s7si2rl5g4hh43s9ehe.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDH2M_EovCSe6G2wR7tW1x12DXNm4gfVjM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "154822089396-mpcn1ooo35vp7s7si2rl5g4hh43s9ehe.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
