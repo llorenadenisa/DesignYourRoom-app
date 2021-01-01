@@ -61,7 +61,7 @@ class PhotoMethodSelector: AppCompatActivity(), BottomNavigationView.OnNavigatio
             R.id.upload_gallery -> {
                 Log.d("Gallery", "Deschide galeria")
                 //openGalleryForImage()
-                img_set.setImageResource(R.drawable.room_img)
+                img_set.setImageResource(R.drawable.test2)
                 val imageBitmap = img_set.drawable.toBitmap()
                 return true
             }
