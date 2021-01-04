@@ -8,7 +8,7 @@ import org.opencv.imgproc.Imgproc
 
 class WallDetection( color : Int) {
 
-    val chosenColor = color
+    private val chosenColor = color
 
     fun applyPaint(bitmap: Bitmap): Mat {
         val cannyMinTreshold = 20.0

@@ -12,6 +12,7 @@ import com.google.firebase.database.*
 
 class SearchObj : AppCompatActivity() {
     lateinit var detectedObj: Array<String>
+    var listOfObj : ArrayList<String> = ArrayList()
     lateinit var ref: DatabaseReference
     lateinit var objList: MutableList<RoomObjNode>
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,35 +41,32 @@ class SearchObj : AppCompatActivity() {
             }
 
             override fun onCancelled(error: DatabaseError) {
-                System.out.println("The read failed: " + error.message);
+                println("The read failed: " + error.message);
             }
 
         })
 
 
 
-
-
-//        val arrayAdapter: ArrayAdapter<*>
-//        val mListView = findViewById<ListView>(R.id.objects)
-//        arrayAdapter = ArrayAdapter(
-//            this,
-//            android.R.layout.simple_list_item_1, detectedObj
-//        )
-//        mListView.adapter = arrayAdapter
     }
 
-    private fun checkObjectsInDb(obj:MutableList<RoomObjNode>) {
+    private fun checkObjectsInDb(objs:MutableList<RoomObjNode>) {
 
-//        for( objectsDetected in detectedObj) {
-//            for (objInDb in objList) {
-//                if (objectsDetected == objInDb.id) {
-//                    Log.e("Gasit", objInDb.id + objInDb.link)
-//                }
-//            }
-//        }
 
+        for( obj in detectedObj) {
+            val withoutSpaces = obj.replace(" ".toRegex(), "")
+            for(dbObj in objs)
+                if( withoutSpaces == dbObj.id)
+                    listOfObj.add(dbObj.id)
         }
+
+        val arrayAdapter: ArrayAdapter<*>
+        val mListView = findViewById<ListView>(R.id.objects)
+        arrayAdapter = ArrayAdapter(
+            this,
+            android.R.layout.simple_list_item_1, listOfObj
+        )
+        mListView.adapter = arrayAdapter
     }
 
 }

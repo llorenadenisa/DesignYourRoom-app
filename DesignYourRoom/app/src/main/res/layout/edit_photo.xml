@@ -38,13 +38,14 @@
 
     <Button
         android:id="@+id/detect_obj"
-        android:layout_width="wrap_content"
-        android:layout_height="69dp"
+        android:layout_width="169dp"
+        android:layout_height="116dp"
         android:layout_below="@+id/edit_img_view"
-        android:layout_marginStart="154dp"
-        android:layout_marginTop="35dp"
+        android:layout_marginStart="111dp"
+        android:layout_marginTop="-4dp"
         android:layout_marginBottom="-30dp"
         android:layout_toEndOf="@+id/colors"
-        android:text="Button" />
+        android:background="@drawable/chair"
+        android:text="Detect" />
 
 </RelativeLayout>
