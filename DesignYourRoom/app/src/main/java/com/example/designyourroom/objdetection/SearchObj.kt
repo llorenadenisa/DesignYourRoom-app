@@ -3,18 +3,24 @@ package com.example.designyourroom.objdetection
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
+import android.widget.Adapter
 import android.widget.ArrayAdapter
 import android.widget.ListView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.example.designyourroom.ExampleObj
+import com.example.designyourroom.ObjectsViewAdapter
 import com.example.designyourroom.R
 import com.example.designyourroom.RoomObjNode
 import com.google.firebase.database.*
 
 class SearchObj : AppCompatActivity() {
     lateinit var detectedObj: Array<String>
-    var listOfObj : ArrayList<String> = ArrayList()
+    var listOfObj : ArrayList<ExampleObj> = ArrayList()
     lateinit var ref: DatabaseReference
     lateinit var objList: MutableList<RoomObjNode>
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.obj_list)
@@ -47,7 +53,6 @@ class SearchObj : AppCompatActivity() {
         })
 
 
-
     }
 
     private fun checkObjectsInDb(objs:MutableList<RoomObjNode>) {
@@ -57,16 +62,20 @@ class SearchObj : AppCompatActivity() {
             val withoutSpaces = obj.replace(" ".toRegex(), "")
             for(dbObj in objs)
                 if( withoutSpaces == dbObj.id)
-                    listOfObj.add(dbObj.id)
+                    listOfObj.add(ExampleObj(dbObj.id, dbObj.link))
         }
-
-        val arrayAdapter: ArrayAdapter<*>
-        val mListView = findViewById<ListView>(R.id.objects)
-        arrayAdapter = ArrayAdapter(
-            this,
-            android.R.layout.simple_list_item_1, listOfObj
-        )
-        mListView.adapter = arrayAdapter
+        initList(listOfObj)
     }
 
+    private fun initList(listOfObj: ArrayList<ExampleObj>)
+    {
+
+        val listAdapter = ObjectsViewAdapter(listOfObj)
+        val recyclerView = findViewById<RecyclerView>(R.id.objects).apply {
+            setHasFixedSize(true)
+            adapter = listAdapter
+        }
+        recyclerView.layoutManager = LinearLayoutManager(this)
+
+    }
 }

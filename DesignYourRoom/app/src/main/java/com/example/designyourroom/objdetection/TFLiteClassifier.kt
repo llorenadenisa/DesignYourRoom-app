@@ -51,7 +51,6 @@ class TFLiteClassifier(private val inputSize: Int) : Classifier {
     }
 
     override fun recognize(bitmap: Bitmap): List<Recognition> {
-        // TODO 4: Step one is to convert the bitmap to a byte buffer.
         val byteBuff = convertBitmapToByteBuffer(bitmap)
 
         val result = Array(1) { ByteArray(labelList.size) }
