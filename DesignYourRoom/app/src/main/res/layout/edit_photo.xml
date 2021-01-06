@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:background="#d7e4fa">
+    android:background="#ECECEC">
 
 
     <ImageView
@@ -22,20 +23,23 @@
         android:layout_marginLeft="10dp"
         android:layout_marginBottom="3dp"
         android:background="@drawable/palette"
-        android:text="Colors" />
+
+        android:text="Colors"
+        app:iconTint="#2C2326" />
 
     <TextView
         android:id="@+id/textView2"
-        android:layout_width="231dp"
-        android:layout_height="64dp"
+        android:layout_width="313dp"
+        android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginStart="75dp"
+        android:layout_marginStart="44dp"
         android:layout_marginTop="67dp"
-        android:layout_marginEnd="87dp"
-        android:text="Pick a color"
-        android:textSize="40dp" />
+        android:layout_marginEnd="53dp"
+        android:text="Pick a color or detect objects"
+        android:textColor="#252525"
+        android:textSize="24sp" />
 
     <Button
         android:id="@+id/detect_obj"
@@ -48,5 +52,13 @@
         android:layout_toEndOf="@+id/colors"
         android:background="@drawable/chair"
         android:text="Detect" />
+
+    <Button
+        android:id="@+id/share"
+        android:layout_width="36dp"
+        android:layout_height="30dp"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="13dp"
+        android:background="@drawable/ic_baseline_share_24" />
 
 </RelativeLayout>

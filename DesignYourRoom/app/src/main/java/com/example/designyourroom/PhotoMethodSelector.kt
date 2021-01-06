@@ -34,7 +34,7 @@ class PhotoMethodSelector: AppCompatActivity(), BottomNavigationView.OnNavigatio
 
     private  val TAKE_PICTURE = 1
     private val UPLOAD_PICTURE = 2;
-    val permissions = arrayOf(
+    private val permissions = arrayOf(
         android.Manifest.permission.CAMERA,
         android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
         android.Manifest.permission.READ_EXTERNAL_STORAGE
@@ -62,7 +62,7 @@ class PhotoMethodSelector: AppCompatActivity(), BottomNavigationView.OnNavigatio
                 Log.d("Gallery", "Deschide galeria")
                 //openGalleryForImage()
                 img_set.setImageResource(R.drawable.test2)
-                val imageBitmap = img_set.drawable.toBitmap()
+                img_set.drawable.toBitmap()
                 return true
             }
             R.id.start_edit -> {
@@ -94,7 +94,7 @@ class PhotoMethodSelector: AppCompatActivity(), BottomNavigationView.OnNavigatio
 
 
     }
-    fun takePhoto() {
+    private fun takePhoto() {
         if(hasNoPermissions()){
             requestPermission()
         }
@@ -115,6 +115,8 @@ class PhotoMethodSelector: AppCompatActivity(), BottomNavigationView.OnNavigatio
                 Log.d("photo", "am returnat o poza")
             }
             UPLOAD_PICTURE -> if (resultCode == Activity.RESULT_OK && data != null) {
+                val imageBitmap = data.extras?.get("data") as Bitmap
+                img_set.setImageBitmap(imageBitmap)
                 Log.d("upload", "am incarcat o poza din galerie")
             }
         }
@@ -133,7 +135,7 @@ class PhotoMethodSelector: AppCompatActivity(), BottomNavigationView.OnNavigatio
         ) != PackageManager.PERMISSION_GRANTED
     }
 
-    fun requestPermission(){
+    private fun requestPermission(){
         ActivityCompat.requestPermissions(this, permissions, 0)
     }
 
@@ -164,9 +166,7 @@ class PhotoMethodSelector: AppCompatActivity(), BottomNavigationView.OnNavigatio
             e.printStackTrace()
         } finally {
             try {
-                if (fos != null) {
-                    fos.close()
-                }
+                fos?.close()
             } catch (e: IOException) {
                 e.printStackTrace()
             }

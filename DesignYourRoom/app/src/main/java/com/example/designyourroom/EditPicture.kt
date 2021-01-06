@@ -1,17 +1,19 @@
 package com.example.designyourroom
 
 import TFLiteClassifier
+import android.content.ContentValues
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore.Images
 import android.util.Log
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.graphics.drawable.toBitmap
 import com.example.designyourroom.objdetection.Classifier
 import com.example.designyourroom.objdetection.SearchObj
-import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.edit_photo.*
 import org.opencv.android.Utils
 import org.opencv.core.Mat
@@ -20,6 +22,7 @@ import yuku.ambilwarna.AmbilWarnaDialog.OnAmbilWarnaListener
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileNotFoundException
+import java.io.OutputStream
 
 
 class EditPicture: AppCompatActivity() {
@@ -60,6 +63,11 @@ class EditPicture: AppCompatActivity() {
 
         }
 
+        share.setOnClickListener{
+            val img = edit_img_view.drawable.toBitmap()
+            shareImage(img)
+        }
+
     }
 
     private fun loadImageFromStorage(path: String) {
@@ -72,7 +80,7 @@ class EditPicture: AppCompatActivity() {
         }
     }
 
-    fun openColorPicker()  {
+    private fun openColorPicker()  {
         val colorPicker = AmbilWarnaDialog(this, mDefaultColor, object : OnAmbilWarnaListener {
             override fun onCancel(dialog: AmbilWarnaDialog) {}
             override fun onOk(dialog: AmbilWarnaDialog, color: Int) {
@@ -98,7 +106,7 @@ class EditPicture: AppCompatActivity() {
     {
 
         val result = classifier.recognize(bitmap)
-        val str = result.joinToString {result-> result.label }
+        val str = result.joinToString { result-> result.label }
 
         val intent = Intent(this, SearchObj::class.java).apply {
             action = Intent.ACTION_SEND
@@ -107,5 +115,32 @@ class EditPicture: AppCompatActivity() {
         startActivity(intent)
     }
 
+    private fun shareImage(bmp: Bitmap)
+    {
+        val icon: Bitmap = bmp
+        val share = Intent(Intent.ACTION_SEND)
+        share.type = "image/jpeg"
+
+        val values = ContentValues()
+        values.put(Images.Media.TITLE, "title")
+        values.put(Images.Media.MIME_TYPE, "image/jpeg")
+        val uri: Uri? = contentResolver.insert(
+            Images.Media.EXTERNAL_CONTENT_URI,
+            values
+        )
+
+
+        val outstream: OutputStream?
+        try {
+            outstream = uri?.let { contentResolver.openOutputStream(it) }
+            icon.compress(Bitmap.CompressFormat.JPEG, 100, outstream)
+            outstream?.close()
+        } catch (e: Exception) {
+            System.err.println(e.toString())
+        }
+
+        share.putExtra(Intent.EXTRA_STREAM, uri)
+        startActivity(Intent.createChooser(share, "Share Image"))
+    }
 
 }

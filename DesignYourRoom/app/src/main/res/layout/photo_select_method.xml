@@ -12,7 +12,6 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="-5dp"
-        app:itemBackground="@android:color/darker_gray"
         app:menu="@menu/bottom_upload_photo" />
 
     <ImageView
@@ -38,6 +37,7 @@
         android:layout_marginBottom="61dp"
         android:text="Choose a method to load a photo"
         android:textAlignment="center"
+        android:textColor="#2C2121"
         android:textSize="24sp"
         android:textStyle="bold" />
 
